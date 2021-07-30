@@ -1,5 +1,8 @@
 /*
- * This is the simplest example code from https://eigen.tuxfamily.org/dox/GettingStarted.html
+ * Refs:
+ * https://dritchie.github.io/csci2240/assignments/eigen_tutorial.pdf
+ * https://eigen.tuxfamily.org/dox/group__TutorialMatrixClass.html
+ * https://eigen.tuxfamily.org/dox/group__TopicStorageOrders.html
  * */
 
 #include <iostream>
