@@ -13,3 +13,4 @@ include_directories(${EIGEN_DIR})
 
 add_subdirectory(001_SetUp)
 add_subdirectory(101_SimpleFirst)
+add_subdirectory(102_Matrix)

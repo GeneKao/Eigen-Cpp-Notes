@@ -1,3 +1,8 @@
+/*
+ * First code to test if Eigen is installed correctly.
+ *
+ */
+
 #include <iostream>
 #include <Eigen/Core>
 

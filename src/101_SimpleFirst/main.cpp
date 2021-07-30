@@ -1,3 +1,7 @@
+/*
+ * This is the simplest example code from https://eigen.tuxfamily.org/dox/GettingStarted.html
+ * */
+
 #include <iostream>
 #include <Eigen/Dense>
 
