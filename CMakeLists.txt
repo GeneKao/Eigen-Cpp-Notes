@@ -11,5 +11,5 @@ if(NOT EIGEN_DIR)
 endif()
 include_directories(${EIGEN_DIR})
 
-set(src main.cpp)
-add_executable(eigen_cpp_notes main.cpp)
+set(src src/main.cpp)
+add_executable(eigen_cpp_notes src/main.cpp)
