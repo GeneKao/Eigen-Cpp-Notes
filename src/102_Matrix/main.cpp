@@ -150,5 +150,8 @@ int main() {
   PRINT(m1);
   PRINT_SIZE(m1);
 
+  // change type of matrix
+  MatrixXf m11 = m1.cast<float>();
+  PRINT(m11);
 
 }
