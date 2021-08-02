@@ -17,21 +17,23 @@ int main() {
   // Different ways to initialise matrix
   Matrix<double , 4, 4> m0 = Matrix4d::Ones();
 
-  MatrixXd m1(4, 4);
+  MatrixXd m1(4, 4); // typedef Matrix<double, Dynamic, Dynamic> MatrixXd;
   m1 = Matrix4d::Zero();
   PRINT(m1);
   Matrix4d m2 = Matrix4d::Random(); // [-1, 1]
   PRINT(m2);
-  Vector4d m3(1.0, 2.0, 3.0, 4.0);
+  Vector4d m3(1.0, 2.0, 3.0, 4.0); // typedef Matrix<double, 4, 1> Vector3d;
   PRINT(m3);
   MatrixXd v = Vector4d::Ones(); // vectors just one dimensional matrices
   PRINT(v);
-  VectorXd m4 = Vector4d::Constant(108.5);
+  VectorXd m4 = Vector4d::Constant(108.5); // column vector
   PRINT(m4);
+  RowVectorXd m4r = Vector4d::Constant(108.5); // row vector
+  PRINT(m4r);
 
   //  store orders
   Matrix<double, 4, 4, RowMajor> m5;
-  m5 << 1, 2, 3, 4,  5, 6, 7, 8 , 9, 10, 11, 12, 13, 14, 15, 16;
+  m5 << 1, 2, 3, 4,  5, 6, 7, 8 , 9, 10, 11, 12, 13, 14, 15, 16; // comma-initializer syntax
   PRINT(m5);
   std::cout << "In memory (row-major):" << std::endl;
   for (int i = 0; i < m5.size(); i++)
@@ -53,6 +55,20 @@ int main() {
   for (int i = 0; i < m7.size(); i++)
     std::cout << *(m7.data() + i) << "  ";
   std::cout << std::endl << std::endl;
+
+  MatrixXd m8(4, 8);
+  m8 << m6, m7;
+  PRINT(m8);
+
+  MatrixXd m9(8, 4);
+  m9 << m6, m7;
+  PRINT(m9);
+
+  MatrixXd m10(5, 9);
+  m10.row(0) << RowVectorXd::Ones(9)*100;
+  m10.block(1, 0, 4, 8) << m8;
+  m10.col(8).tail(4) << VectorXd::Ones(4)*99;
+  PRINT(m10);
 
   // Coefficient accessors
   m0(2, 2) = 100;
