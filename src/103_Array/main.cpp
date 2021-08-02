@@ -9,11 +9,13 @@
 
 #define PRINT(x) std::cout << #x << ": " << std::endl << (x) << std::endl << std::endl
 #define PRINT_SIZE(x) std::cout << #x << " is of size " << x.rows() << "x" << x.cols() << std::endl << std::endl
+#define SECTION(x) std::cout << "======================== " << x << " =======================" << std::endl << std::endl
 
 int main() {
 
   using namespace Eigen;
 
+  SECTION("Initialisations");
   ArrayXXf m1(2,2); // Array<double,Dynamic,Dynamic>
   m1 = Array22f::Ones();
   PRINT(m1);
@@ -30,6 +32,7 @@ int main() {
   std::cout << "\tDegrees\t\tRadians\t\tSine\t\tCosine\n";
   std::cout << table << std::endl;
 
+  SECTION("Operations");
   PRINT(m1+5);
   PRINT(m1+m2);
   PRINT(m1*2);
@@ -41,6 +44,7 @@ int main() {
   PRINT(m3.min(m3.abs().sqrt()));
   // more coefficient-wise & Array operators https://eigen.tuxfamily.org/dox/group__QuickRefPage.html
 
+  SECTION("Types converting");
   // convert type
   MatrixXf m(2,2);
   MatrixXf n(2,2);

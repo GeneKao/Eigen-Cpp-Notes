@@ -9,11 +9,13 @@
 
 #define PRINT(x) std::cout << #x << ": " << std::endl << (x) << std::endl << std::endl
 #define PRINT_SIZE(x) std::cout << #x << " is of size " << x.rows() << "x" << x.cols() << std::endl << std::endl
+#define SECTION(x) std::cout << "======================== " << x << " =======================" << std::endl << std::endl
 
 int main() {
 
   using namespace Eigen;
 
+  SECTION("Initialisations");
   // Different ways to initialise matrix
   Matrix<double , Dynamic, Dynamic, 0, 6, 8> m0 = Matrix4d::Ones();
   // the last three are optional, so we don't have to worry about it most of the time.
@@ -34,6 +36,7 @@ int main() {
   RowVectorXd m4r = Vector4d::Constant(108.5); // row vector
   PRINT(m4r);
 
+  SECTION("Store orders");
   // store orders
   // https://eigen.tuxfamily.org/dox/group__TopicStorageOrders.html
   Matrix<double, 4, 4, RowMajor> m5;
@@ -69,11 +72,27 @@ int main() {
   m9 << m6, m7;
   PRINT(m9);
 
+  SECTION("Block Operation");
+  // block operation https://eigen.tuxfamily.org/dox/group__TutorialBlockOperations.html
   MatrixXd m10(5, 9);
   m10.row(0) << RowVectorXd::Ones(9)*100;
-  m10.block(1, 0, 4, 8) << m8;
-  m10.col(8).tail(4) << VectorXd::Ones(4)*99;
+  m10.block(1, 0, 4, 4) << m6;
+  m10.block<4, 4>(1, 4) = m7*2;
+  m10.col(8).tail(4) << VectorXd::Ones(4)*99; // col and row are special case of block
   PRINT(m10);
+  // some other keywords:
+  // topLeftCorner, bottomLeftCorner, topRightCorner, bottomRightCorner, topRows, bottomRows, leftCols, rightCols.
+  PRINT(m5);
+  PRINT(m5.leftCols(2));
+  PRINT(m5.bottomRows<2>());
+  m5.topLeftCorner(1,3) = m5.bottomRightCorner(3,1).transpose();
+  PRINT(m5);
+  VectorXd v0(6);
+  v0 << 1, 2, 3, 4, 5, 6;
+  PRINT(v0.head(3));
+  PRINT(v0.tail<3>());
+  v0.segment(1,4) *= 2;
+  PRINT(v0);
 
   // Coefficient accessors
   m0(2, 2) = 100;
@@ -82,6 +101,7 @@ int main() {
   m1 = Matrix4d::Identity(); // overwrite matrix values
   PRINT(m1);
 
+  SECTION("Matrix Operations");
   // Matrix Operations
   PRINT(m0 + m1);
   PRINT(m0 * m1);
@@ -100,13 +120,16 @@ int main() {
   PRINT(m6);
   PRINT(m6.inverse()); // if not invertible then shows NaN
 
+  SECTION("Element-Wise");
   // element-wise
   PRINT(m6.array().square());
   PRINT(m6.array() * m6.transpose().array());
   PRINT(((m0 * m1).array() == (m0 - m1 * 2.2).array()));
 
+  SECTION("Basic arithmetic reduction operations");
   // Basic arithmetic reduction operations
   // https://eigen.tuxfamily.org/dox/group__TutorialMatrixArithmetic.html
+  // https://eigen.tuxfamily.org/dox/group__TutorialReductionsVisitorsBroadcasting.html
   PRINT(m1);
   PRINT(m1.sum());
   PRINT(m1.prod());
@@ -118,6 +141,7 @@ int main() {
   double minOfm1 = m1.minCoeff(&i, &j);
   std::cout << minOfm1 << " is at position: (" << i << "," << j << ")" << std::endl;
 
+  SECTION("Vector operations");
   // Vector operations
   Vector3f v1, v2;
   v1 = Vector3f::Random();
@@ -136,6 +160,7 @@ int main() {
   // element-wise similar to matrix
   PRINT(v1.array().sin());
 
+  SECTION("Resizing");
   // resizing
   // https://eigen.tuxfamily.org/dox/group__TutorialMatrixClass.html
   VectorXd v4 = Vector4d::Ones()*100;
@@ -153,5 +178,14 @@ int main() {
   // change type of matrix
   MatrixXf m11 = m1.cast<float>();
   PRINT(m11);
+
+  SECTION("Temporary objects");
+  // using comma-initializer as temporary objects
+  // https://eigen.tuxfamily.org/dox/group__TutorialAdvancedInitialization.html
+  MatrixXf mat = MatrixXf::Random(2, 3);
+  PRINT(mat);
+  mat = (MatrixXf(2,2) << 0, 1, 1, 0).finished() * mat;
+  PRINT(mat);
+  // https://eigen.tuxfamily.org/dox/structEigen_1_1CommaInitializer.html#a3cf9e2b8a227940f50103130b2d2859a
 
 }
