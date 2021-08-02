@@ -30,7 +30,7 @@ int main() {
   PRINT(m4);
 
   //  store orders
-  Matrix<double, 4, 4, RowMajor> m5; // default is RowMajor
+  Matrix<double, 4, 4, RowMajor> m5;
   m5 << 1, 2, 3, 4,  5, 6, 7, 8 , 9, 10, 11, 12, 13, 14, 15, 16;
   PRINT(m5);
   std::cout << "In memory (row-major):" << std::endl;
@@ -44,6 +44,14 @@ int main() {
   std::cout << "In memory (column-major):" << std::endl;
   for (int i = 0; i < m6.size(); i++)
     std::cout << *(m6.data() + i) << "  ";
+  std::cout << std::endl << std::endl;
+
+  Matrix<double, 4, 4> m7; // default is Column major
+  m7 << 1, 2, 3, 4,  5, 6, 7, 8 , 9, 10, 11, 12, 13, 14, 15, 16;
+  PRINT(m7);
+  std::cout << "In memory (column-major) is default:" << std::endl;
+  for (int i = 0; i < m7.size(); i++)
+    std::cout << *(m7.data() + i) << "  ";
   std::cout << std::endl << std::endl;
 
   // Coefficient accessors
