@@ -94,12 +94,40 @@ int main() {
   v0.segment(1,4) *= 2;
   PRINT(v0);
 
+  SECTION("Diagonal");
   // Coefficient accessors
   m0(2, 2) = 100;
   PRINT(m0);
+  PRINT(m0.diagonal());
+  MatrixXd m0d1 = m0.diagonal().asDiagonal();
+  // https://eigen.tuxfamily.org/dox/classEigen_1_1MatrixBase.html#a14235b62c90f93fe910070b4743782d0
+  PRINT(m0d1);
+  DiagonalMatrix<double, Dynamic> m0d2;
+  // http://eigen.tuxfamily.org/dox/classEigen_1_1DiagonalMatrix.html
+  m0d2.diagonal() = m0.diagonal();
+  PRINT(MatrixXd(m0d2));
 
   m1 = Matrix4d::Identity(); // overwrite matrix values
   PRINT(m1);
+
+  SECTION("Vector operations");
+  // Vector operations
+  Vector3f v1, v2;
+  v1 = Vector3f::Random();
+  v2 = Vector3f::Random();
+  PRINT(v1);
+  PRINT(v2);
+  PRINT(v1 * v2.transpose());
+  PRINT(v1.transpose() * v2);
+  PRINT(v1.dot(v2));
+  PRINT(v1.cross(Vector3f(3., 4., 6.).normalized()));
+  PRINT(v1.cross(v2));
+
+  Vector4f v3 = v1.homogeneous();
+  PRINT(v3);
+  PRINT(v3.hnormalized());
+  // element-wise similar to matrix
+  PRINT(v1.array().sin());
 
   SECTION("Matrix Operations");
   // Matrix Operations
@@ -137,28 +165,64 @@ int main() {
   PRINT(m1.minCoeff());
   PRINT(m1.maxCoeff());
   PRINT(m1.trace());
+  // visitors
+  MatrixXd::Index maxRow, maxCol;
+  double maxOfm1 = m1.maxCoeff(&maxRow, &maxCol);
+  std::cout << maxOfm1 << " is at position: (" << maxRow << "," << maxCol << ")" << std::endl << std::endl;
   std::ptrdiff_t i, j;
   double minOfm1 = m1.minCoeff(&i, &j);
-  std::cout << minOfm1 << " is at position: (" << i << "," << j << ")" << std::endl;
+  std::cout << minOfm1 << " is at position: (" << i << "," << j << ")" << std::endl << std::endl;
+  // partial reductions
+  PRINT(m1.colwise().maxCoeff());
+  PRINT(m1.rowwise().maxCoeff());
+  PRINT(m1.cwiseSqrt());
+  PRINT(m1.cwiseSqrt().colwise().maxCoeff());
 
-  SECTION("Vector operations");
-  // Vector operations
-  Vector3f v1, v2;
-  v1 = Vector3f::Random();
-  v2 = Vector3f::Random();
-  PRINT(v1);
-  PRINT(v2);
-  PRINT(v1 * v2.transpose());
-  PRINT(v1.transpose() * v2);
-  PRINT(v1.dot(v2));
-  PRINT(v1.cross(Vector3f(3., 4., 6.).normalized()));
-  PRINT(v1.cross(v2));
+  SECTION("Norm");
+  PRINT(m1.squaredNorm());
+  PRINT(m1.norm());
+  // lp-norm
+  PRINT(m1.lpNorm<2>());
+  PRINT(m1.lpNorm<1>());
+  PRINT(m1.lpNorm<Infinity>());
+  // Operator norm: https://en.wikipedia.org/wiki/Operator_norm
+  // 1-norm(m1)
+  PRINT(m1.cwiseAbs().colwise().sum().maxCoeff());
+  PRINT(m1.colwise().lpNorm<1>().maxCoeff());
+  // Infinity-norm(m1)
+  PRINT(m1.cwiseAbs().rowwise().sum().maxCoeff());
+  PRINT(m1.rowwise().lpNorm<1>().maxCoeff());
 
-  Vector4f v3 = v1.homogeneous();
-  PRINT(v3);
-  PRINT(v3.hnormalized());
-  // element-wise similar to matrix
-  PRINT(v1.array().sin());
+  PRINT(m6);
+  MatrixXd::Index maxIndex;
+  double maxNorm = m6.colwise().sum().maxCoeff(&maxIndex);
+  std::cout << "Maximum sum at position " << maxIndex << std::endl
+            << "The corresponding vector is: " << std::endl
+            << m6.col(maxIndex) << std::endl
+            << "And its sum is is: " << maxNorm << std::endl << std::endl;
+
+  SECTION("Broadcasting");
+  // https://eigen.tuxfamily.org/dox/group__TutorialReductionsVisitorsBroadcasting.html
+  MatrixXd mb = MatrixXd::Zero(2, 4);
+  VectorXd vb = Vector2d(0, 1);
+  PRINT(mb);
+  PRINT(vb);
+  mb.colwise() += vb;
+  PRINT(mb);
+  mb.setZero();
+  vb = Vector4d(0, 1, 2, 3);
+  mb.rowwise() += vb.transpose();
+  PRINT(mb);
+  PRINT(vb);
+  // find nearest neighbour
+  mb.setRandom();
+  vb.setRandom(2);
+  PRINT(mb);
+  PRINT(vb);
+  MatrixXf::Index index;
+  (mb.colwise() - vb).colwise().squaredNorm().minCoeff(&index);
+  std::cout << "Nearest neighbour is column " << index << ":" << std::endl;
+  std::cout << mb.col(index) << std::endl;
 
   SECTION("Resizing");
   // resizing

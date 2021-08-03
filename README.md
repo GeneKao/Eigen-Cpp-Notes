@@ -2,7 +2,7 @@
 My eigen library practice notes
 
 
-### Installation  
+### To run the code  
 
 1. Clone this repo and load submodules:
 ```bash

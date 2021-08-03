@@ -38,11 +38,16 @@ int main() {
   PRINT(m1*2);
   PRINT(m1*m2);
 
+  SECTION("Reduction");
   Array33f m3 = Array33f::Random();
   PRINT(m3);
   PRINT(m3.abs().sqrt());
   PRINT(m3.min(m3.abs().sqrt()));
   // more coefficient-wise & Array operators https://eigen.tuxfamily.org/dox/group__QuickRefPage.html
+  // boolean https://eigen.tuxfamily.org/dox/group__TutorialReductionsVisitorsBroadcasting.html
+  PRINT((m3 > 0).all());
+  PRINT((m3 > 0).any());
+  PRINT((m3 > 0).count());
 
   SECTION("Types converting");
   // convert type
